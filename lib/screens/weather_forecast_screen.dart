@@ -1,36 +1,34 @@
 import 'package:flutter/material.dart';
-import 'package:weather_forecast/api/weather_api.dart';
-import 'package:weather_forecast/models/weather_forecast_daily.dart';
-import 'package:weather_forecast/screens/city_screen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weather_forecast/widgets/bottom_list_view.dart';
 import 'package:weather_forecast/widgets/cityview.dart';
 import 'package:weather_forecast/widgets/detail_view.dart';
+import 'package:weather_forecast/widgets/hourly_forecast.dart';
 import 'package:weather_forecast/widgets/temp_view.dart';
 
-class WeatherForecastScreen extends StatefulWidget {
+import '../bloc/weather_forecast_bloc/weather_forecast_bloc.dart';
+import 'city_screen.dart';
+
+class WeatherForecastScreen extends StatelessWidget {
+  const WeatherForecastScreen({super.key, this.locationWeather});
   final locationWeather;
 
-  const WeatherForecastScreen({super.key, this.locationWeather});
-
   @override
-  State<WeatherForecastScreen> createState() => _WeatherForecastScreenState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => WeatherForecastBloc()..add(CityWeatherEvent()),
+      child: _WeatherForecastScreen(),
+    );
+  }
 }
 
-class _WeatherForecastScreenState extends State<WeatherForecastScreen> {
-  late Future<WeatherForecast> forecastObject;
-  late String _cityName;
-
+class _WeatherForecastScreen extends StatefulWidget {
   @override
-  void initState() {
-    super.initState();
-    if (widget.locationWeather != null) {
-      forecastObject = Future.value(widget.locationWeather);
-    }
+  __WeatherForecastScreenState createState() => __WeatherForecastScreenState();
+}
 
-    // forecastObject.then((weather) {
-    //   print(weather.list![0].weather![0].main);
-    // });
-  }
+class __WeatherForecastScreenState extends State<_WeatherForecastScreen> {
+  late String _cityName;
 
   @override
   Widget build(BuildContext context) {
@@ -40,64 +38,62 @@ class _WeatherForecastScreenState extends State<WeatherForecastScreen> {
         title: const Text(''),
         automaticallyImplyLeading: false,
         leading: IconButton(
-          icon: const Icon(Icons.my_location,  color: Colors.white),
+          icon: const Icon(Icons.my_location, color: Colors.white),
           onPressed: () {
-            setState(() {
-              forecastObject = WeatherApi().fetchWeatherForecast();
-            });
+            BlocProvider.of<WeatherForecastBloc>(context);
           },
         ),
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.location_city, color: Colors.white),
             onPressed: () async {
-              var tappedName = await Navigator.push(context,
-                  MaterialPageRoute(builder: (context) {
-                    return const CityScreen();
-                  }));
+              var tappedName = await Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return const CityScreen();
+              }));
               if (tappedName != null) {
                 setState(() {
                   _cityName = tappedName;
-                  forecastObject = WeatherApi()
-                      .fetchWeatherForecast(cityName: _cityName, isCity: true);
                 });
+                BlocProvider.of<WeatherForecastBloc>(context).add(CityWeatherEvent(cityName: _cityName));
               }
             },
           )
         ],
       ),
-      body: ListView(
-        children: [
-          FutureBuilder<WeatherForecast>(
-            future: forecastObject,
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return Column(
-                  children: <Widget>[
-                    const SizedBox(height: 50),
-                    CityView(snapshot: snapshot),
-                    const SizedBox(height: 50),
-                    TempView(snapshot: snapshot),
-                    const SizedBox(height: 50),
-                    DetailView(snapshot: snapshot),
-                    const SizedBox(height: 50),
-                    BottomListView(snapshot: snapshot)
-                  ],
-                );
-              } else {
-                print('SNAPSHOT DEBUG: $snapshot');
-                return
-                  const Center(
-                    child: Text(
-                      'City not found\nPlease, enter correct city',
-                      style: TextStyle(fontSize: 25),
-                      textAlign: TextAlign.center,
-                    ),
-                  );
-              }
-            },
-          )
-        ],
+      body: BlocBuilder<WeatherForecastBloc, WeatherForecastState>(
+        builder: (context, state) {
+          print('State $state');
+          if (state is WeatherForecastLoaded) {
+            return Column(
+              children: <Widget>[
+                const SizedBox(height: 50),
+                CityView(data: state.weatherForecast),
+                const SizedBox(height: 50),
+                TempView(data: state.weatherForecast),
+                const SizedBox(height: 50),
+                DetailView(data: state.weatherForecast),
+                const SizedBox(height: 50),
+                HourlyForecast(data: state.hourlyForecast),
+                const SizedBox(height: 50),
+                BottomListView(data: state.weatherForecast),
+              ],
+            );
+          } else if (state is WeatherForecastLoadingFailure) {
+
+            print('Error ${state.exception}');
+            return const Center(
+              child: Text(
+                'City not found\nPlease, enter correct city',
+                style: TextStyle(fontSize: 25),
+                textAlign: TextAlign.center,
+              ),
+            );
+          } else {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        },
       ),
     );
   }

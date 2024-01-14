@@ -26,10 +26,6 @@
 //     if (widget.locationWeather != null) {
 //       forecastObject = Future.value(widget.locationWeather);
 //     }
-//
-//     // forecastObject.then((weather) {
-//     //   print(weather.list![0].weather![0].main);
-//     // });
 //   }
 //
 //   @override
@@ -40,7 +36,7 @@
 //         title: const Text(''),
 //         automaticallyImplyLeading: false,
 //         leading: IconButton(
-//           icon: const Icon(Icons.my_location),
+//           icon: const Icon(Icons.my_location,  color: Colors.white),
 //           onPressed: () {
 //             setState(() {
 //               forecastObject = WeatherApi().fetchWeatherForecast();
@@ -49,7 +45,7 @@
 //         ),
 //         actions: <Widget>[
 //           IconButton(
-//             icon: const Icon(Icons.location_city),
+//             icon: const Icon(Icons.location_city, color: Colors.white),
 //             onPressed: () async {
 //               var tappedName = await Navigator.push(context,
 //                   MaterialPageRoute(builder: (context) {
@@ -102,3 +98,4 @@
 //     );
 //   }
 // }
+// /

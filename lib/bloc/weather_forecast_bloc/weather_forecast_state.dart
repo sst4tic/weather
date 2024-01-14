@@ -18,9 +18,11 @@ class WeatherForecastLoading extends WeatherForecastState {
 class WeatherForecastLoaded extends WeatherForecastState {
   WeatherForecastLoaded({
     required this.weatherForecast,
+    required this.hourlyForecast,
   });
 
   final WeatherForecast weatherForecast;
+  final WeatherForecastHourly hourlyForecast;
 
   List<Object?> get props => [weatherForecast];
 }

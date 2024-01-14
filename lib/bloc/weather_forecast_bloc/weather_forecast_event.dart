@@ -2,12 +2,10 @@ part of 'weather_forecast_bloc.dart';
 
 abstract class WeatherForecastEvent {}
 
-class LoadWeatherForecast extends WeatherForecastEvent {
-  LoadWeatherForecast({
-    this.completer,
-  });
 
-  final Completer? completer;
+class CityWeatherEvent extends WeatherForecastEvent {
+  final String? cityName;
 
-  List<Object?> get props => [completer];
+  CityWeatherEvent({this.cityName});
+
 }

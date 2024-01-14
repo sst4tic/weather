@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:weather_forecast/models/weather_forecast_daily.dart';
 import 'package:weather_forecast/utilities/forecast_util.dart';
 
-Widget forecastCard(AsyncSnapshot snapshot, int index, ) {
-  var forecastList = snapshot.data!.list;
+Widget forecastCard(WeatherForecast data, int index, ) {
+  var forecastList = data!.list;
   var dayOfWeek = '';
-  DateTime date = DateTime.fromMillisecondsSinceEpoch(forecastList[index].dt * 1000);
+  DateTime date = DateTime.fromMillisecondsSinceEpoch(forecastList![index].dt! * 1000);
   var fullDay = Util.getFormatedDate(date);
   dayOfWeek = fullDay.split(',')[0];
-  var tempMin = forecastList![index].temp.min.toStringAsFixed(0);
+  var tempMin = forecastList![index].temp!.min!.toStringAsFixed(0);
   var icon = forecastList![index].getIconUrl();
   return Column(
     mainAxisAlignment: MainAxisAlignment.start,

@@ -6,13 +6,13 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class DetailView extends StatelessWidget {
 
-  final AsyncSnapshot<WeatherForecast> snapshot;
+  final WeatherForecast data;
 
-  const DetailView({super.key, required this.snapshot});
+  const DetailView({super.key, required this.data});
 
   @override
   Widget build(BuildContext context) {
-    var forecastList = snapshot.data!.list;
+    var forecastList = data!.list;
     var pressure = forecastList![0].pressure! * 0.750062;
     var humidity = forecastList[0].humidity!;
     var wind = forecastList[0].speed!;
