@@ -64,18 +64,19 @@ class __WeatherForecastScreenState extends State<_WeatherForecastScreen> {
         builder: (context, state) {
           print('State $state');
           if (state is WeatherForecastLoaded) {
-            return Column(
+            return ListView(
               children: <Widget>[
                 const SizedBox(height: 50),
                 CityView(data: state.weatherForecast),
-                const SizedBox(height: 50),
+                const SizedBox(height: 20),
                 TempView(data: state.weatherForecast),
-                const SizedBox(height: 50),
+                const SizedBox(height: 20),
                 DetailView(data: state.weatherForecast),
-                const SizedBox(height: 50),
-                HourlyForecast(data: state.hourlyForecast),
-                const SizedBox(height: 50),
+                const SizedBox(height: 20),
                 BottomListView(data: state.weatherForecast),
+                const SizedBox(height: 30),
+                HourlyForecast(data: state.hourlyForecast),
+                // const SizedBox(height: 50),
               ],
             );
           } else if (state is WeatherForecastLoadingFailure) {

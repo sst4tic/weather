@@ -22,45 +22,46 @@ class HourlyForecast extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        Container(
-          height: 95,
+        Padding(
           padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-          child: ListView.separated(
-            separatorBuilder: (context, index) => const SizedBox(width: 8),
-            itemCount: data!.hourly!.length,
-            itemBuilder: (context, index) {
-              // Convert timestamp to DateTime
-              DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(
-                data!.hourly![index].dt! * 1000,
-                isUtc: true,
-              );
-
-              // Convert temperature from Fahrenheit to Celsius
-              double temperatureCelsius = fahrenheitToCelsius(data!.hourly![index].temp!);
-
-              return Container(
-                margin: const EdgeInsets.symmetric(vertical: 4),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.black87,
-                ),
-                width: MediaQuery.of(context).size.width / 2.7,
-                height: 160,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Text(
-                      '${dateTime.hour}:${dateTime.minute}0',
-                      style: const TextStyle(fontSize: 16, color: Colors.white),
+          child: Container(
+            decoration:  BoxDecoration(
+    borderRadius: BorderRadius.circular(10),
+    color: Colors.black87,
+    ),
+            child: ListView.separated(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              separatorBuilder: (context, index) => const Divider(color: Colors.grey,),
+              itemCount: data!.hourly!.length,
+              itemBuilder: (context, index) {
+                // Convert timestamp to DateTime
+                DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(
+                  data!.hourly![index].dt! * 1000,
+                  isUtc: true,
+                );
+                return SizedBox(
+                  width: MediaQuery.of(context).size.width / 2.7,
+                  height: 30,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          '${dateTime.hour}:${dateTime.minute}0',
+                          style: const TextStyle(fontSize: 16, color: Colors.white),
+                        ),
+                        Text(
+                          '${data!.hourly![index].temp!.round()}°C',
+                          style: const TextStyle(fontSize: 15, color: Colors.white),
+                        ),
+                      ],
                     ),
-                    Text(
-                      '$temperatureCelsius°C',
-                      style: const TextStyle(fontSize: 15, color: Colors.white),
-                    ),
-                  ],
-                ),
-              );
-            },
+                  ),
+                );
+              },
+            ),
           ),
         ),
       ],

@@ -50,8 +50,9 @@ class WeatherApi {
     await location.getCurrentLocation();
     final response = await http.get(
       Uri.parse(
-          'https://api.openweathermap.org/data/2.5/onecall?lat=${location.latitude.toString()}&lon=${location.longitude.toString()}&exclude=current,minutely,daily&appid=${Constants.WEATHER_APP_ID}'),
+          'https://api.openweathermap.org/data/2.5/onecall?lat=${location.latitude.toString()}&lon=${location.longitude.toString()}&exclude=current,minutely,daily&appid=${Constants.WEATHER_APP_ID}&units=metric'),
     );
+    print('URL ${response.request}');
     print('RESP: ${response.body}');
     if (response.statusCode == 200) {
       final forecast = json.decode(response.body);
